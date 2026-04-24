@@ -6,7 +6,7 @@ events {
 }
 
 http {
-  include /etc/nginx/mime.types;
+  include __NGINX_MIME_TYPES__;
   default_type application/octet-stream;
 
   __NGINX_ACCESS_LOG__
@@ -48,70 +48,53 @@ http {
     location ^~ /dashboard/ {
       __DASHBOARD_BLOCK__
       rewrite ^/dashboard/(.*)$ /$1 break;
+      proxy_intercept_errors on;
+      error_page 404 = /dashboard/;
       proxy_pass http://127.0.0.1:__DASHBOARD_PORT__;
-      proxy_http_version 1.1;
-      proxy_set_header Upgrade $http_upgrade;
-      proxy_set_header Connection "upgrade";
-      proxy_set_header Host 127.0.0.1;
-      proxy_set_header X-Forwarded-Host $host;
-      proxy_set_header X-Forwarded-Prefix /dashboard;
-      proxy_set_header X-Real-IP $remote_addr;
-      proxy_set_header X-Forwarded-For $remote_addr;
-      proxy_set_header X-Forwarded-Proto $scheme;
-      proxy_set_header Accept-Encoding "";
-      proxy_redirect http://127.0.0.1:__DASHBOARD_PORT__/ /dashboard/;
-      proxy_read_timeout 3600s;
-      proxy_send_timeout 3600s;
-      proxy_buffering off;
-      sub_filter_once off;
-      sub_filter_types text/css application/javascript text/javascript application/json;
-      sub_filter 'href="/' 'href="./';
-      sub_filter 'src="/' 'src="./';
-      sub_filter 'action="/' 'action="./';
-      sub_filter 'url(/' 'url(./';
-      sub_filter '"/assets/' '"./assets/';
-      sub_filter "'/assets/" "'./assets/";
-      sub_filter '"/api/' '"./api/';
-      sub_filter "'/api/" "'./api/";
-      sub_filter '"/ws' '"./ws';
-      sub_filter "'/ws" "'./ws";
+      include __DASHBOARD_PROXY_INCLUDE__;
+    }
+
+    location ^~ /dashboard/assets/ {
+      __DASHBOARD_BLOCK__
+      proxy_pass http://127.0.0.1:__DASHBOARD_PORT__/assets/;
+      include __DASHBOARD_PROXY_INCLUDE__;
+    }
+
+    location ^~ /dashboard/api/ {
+      __DASHBOARD_BLOCK__
+      proxy_pass http://127.0.0.1:__DASHBOARD_PORT__/api/;
+      include __DASHBOARD_PROXY_INCLUDE__;
+    }
+
+    location ^~ /dashboard/ws {
+      __DASHBOARD_BLOCK__
+      proxy_pass http://127.0.0.1:__DASHBOARD_PORT__/ws;
+      include __DASHBOARD_PROXY_INCLUDE__;
     }
 
     # Fallbacks for direct asset/API requests from the dashboard.
     location ^~ /assets/ {
       __DASHBOARD_BLOCK__
       proxy_pass http://127.0.0.1:__DASHBOARD_PORT__;
-      proxy_set_header Host 127.0.0.1;
-      proxy_set_header X-Forwarded-Host $host;
-      proxy_set_header Accept-Encoding "";
-      sub_filter_once off;
-      sub_filter_types text/css application/javascript text/javascript application/json;
-      sub_filter '"/assets/' '"./assets/';
-      sub_filter "'/assets/" "'./assets/";
-      sub_filter '"/api/' '"./api/';
-      sub_filter "'/api/" "'./api/";
-      sub_filter '"/ws' '"./ws';
-      sub_filter "'/ws" "'./ws";
+      include __DASHBOARD_PROXY_INCLUDE__;
     }
 
     location ^~ /api/ {
       __DASHBOARD_BLOCK__
       proxy_pass http://127.0.0.1:__DASHBOARD_PORT__;
-      proxy_http_version 1.1;
-      proxy_set_header Upgrade $http_upgrade;
-      proxy_set_header Connection "upgrade";
-      proxy_set_header Host 127.0.0.1;
-      proxy_set_header X-Forwarded-Host $host;
-      proxy_read_timeout 3600s;
-      proxy_send_timeout 3600s;
-      proxy_buffering off;
+      include __DASHBOARD_PROXY_INCLUDE__;
+    }
+
+    location ^~ /ws {
+      __DASHBOARD_BLOCK__
+      proxy_pass http://127.0.0.1:__DASHBOARD_PORT__;
+      include __DASHBOARD_PROXY_INCLUDE__;
     }
 
     location = /favicon.ico {
       __DASHBOARD_BLOCK__
       proxy_pass http://127.0.0.1:__DASHBOARD_PORT__;
-      proxy_set_header Host 127.0.0.1;
-      proxy_set_header X-Forwarded-Host $host;
+      include __DASHBOARD_PROXY_INCLUDE__;
     }
 
     location / {

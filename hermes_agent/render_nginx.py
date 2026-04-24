@@ -7,7 +7,9 @@ def main():
     nginx_tpl_path = Path(os.environ.get("NGINX_TEMPLATE", "/etc/nginx/nginx.conf.tpl"))
     landing_tpl_path = Path(os.environ.get("LANDING_TEMPLATE", "/etc/nginx/landing.html.tpl"))
     nginx_out_path = Path(os.environ.get("NGINX_OUTPUT", "/etc/nginx/nginx.conf"))
+    dashboard_proxy_out_path = Path(os.environ.get("DASHBOARD_PROXY_OUTPUT", "/etc/nginx/dashboard_proxy.conf"))
     landing_out_dir = Path(os.environ.get("LANDING_OUTPUT_DIR", "/etc/nginx/html"))
+    mime_types_path = os.environ.get("NGINX_MIME_TYPES", "/etc/nginx/mime.types")
 
     terminal_port = os.environ.get("TERMINAL_PORT", "7681")
     dashboard_port = os.environ.get("DASHBOARD_PORT", "9118")
@@ -32,12 +34,48 @@ def main():
 
     conf = nginx_tpl_path.read_text(encoding="utf-8")
     conf = conf.replace("__NGINX_ACCESS_LOG__", access_log)
+    conf = conf.replace("__NGINX_MIME_TYPES__", mime_types_path)
     conf = conf.replace("__TERMINAL_PORT__", terminal_port)
     conf = conf.replace("__DASHBOARD_PORT__", dashboard_port)
+    conf = conf.replace("__DASHBOARD_PROXY_INCLUDE__", str(dashboard_proxy_out_path))
     conf = conf.replace("__TERMINAL_BLOCK__", "" if enable_terminal == "true" else "return 404;")
     conf = conf.replace("__DASHBOARD_BLOCK__", "" if enable_dashboard == "true" else "return 404;")
     nginx_out_path.parent.mkdir(parents=True, exist_ok=True)
     nginx_out_path.write_text(conf, encoding="utf-8")
+
+    dashboard_proxy = f"""proxy_http_version 1.1;
+proxy_set_header Upgrade $http_upgrade;
+proxy_set_header Connection "upgrade";
+proxy_set_header Host $http_host;
+proxy_set_header X-Forwarded-Host $http_host;
+proxy_set_header X-Forwarded-Prefix /dashboard;
+proxy_set_header X-Real-IP $remote_addr;
+proxy_set_header X-Forwarded-For $remote_addr;
+proxy_set_header X-Forwarded-Proto $scheme;
+proxy_set_header Accept-Encoding "";
+proxy_redirect http://127.0.0.1:{dashboard_port}/ ./;
+proxy_read_timeout 3600s;
+proxy_send_timeout 3600s;
+proxy_buffering off;
+sub_filter_once off;
+sub_filter_types text/css application/javascript text/javascript application/json;
+sub_filter 'http://127.0.0.1:{dashboard_port}/' './';
+sub_filter 'http://127.0.0.1:{dashboard_port}' '.';
+sub_filter 'ws://127.0.0.1:{dashboard_port}/ws' './ws';
+sub_filter 'ws://127.0.0.1:{dashboard_port}' './ws';
+sub_filter 'href="/' 'href="./';
+sub_filter 'src="/' 'src="./';
+sub_filter 'action="/' 'action="./';
+sub_filter 'url(/' 'url(./';
+sub_filter '"/assets/' '"./assets/';
+sub_filter "'/assets/" "'./assets/";
+sub_filter '"/api/' '"./api/';
+sub_filter "'/api/" "'./api/";
+sub_filter '"/ws' '"./ws';
+sub_filter "'/ws" "'./ws";
+"""
+    dashboard_proxy_out_path.parent.mkdir(parents=True, exist_ok=True)
+    dashboard_proxy_out_path.write_text(dashboard_proxy, encoding="utf-8")
 
     landing = landing_tpl_path.read_text(encoding="utf-8")
     terminal_status = "Enabled" if enable_terminal == "true" else "Disabled"
