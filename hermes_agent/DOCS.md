@@ -67,10 +67,6 @@ Hermes only receives Home Assistant events matching the configured filters.
 
 This filtering is applied by the add-on's Supervisor API compatibility proxy. It does not affect Hermes' ability to read Home Assistant state changes or call Home Assistant services.
 
-## Tool access
-
-The default Home Assistant toolsets include smart-home controls, web tools, skills, memory, session search, tasks, and cron jobs. Terminal and file tools are not enabled by default for Home Assistant events. Add `terminal` or `file` to `toolsets` only if you want Hermes to execute commands or edit files inside the add-on container.
-
 ## Data
 
 Hermes data is stored in `/config/.hermes` and is included in Home Assistant backups, except for cache paths listed in the add-on backup exclusions.

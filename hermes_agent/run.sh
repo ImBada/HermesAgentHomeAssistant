@@ -150,8 +150,6 @@ for key, value in env_values.items():
 env_path.write_text("\n".join(env_lines) + "\n", encoding="utf-8")
 env_path.chmod(stat.S_IRUSR | stat.S_IWUSR)
 
-toolsets = text_list("toolsets") or ["homeassistant", "web", "skills", "todo", "memory", "session_search", "cronjob"]
-
 watch_domains = text_list("watch_domains")
 legacy_noisy_domains = ["climate", "binary_sensor", "alarm_control_panel", "light"]
 if watch_domains == legacy_noisy_domains:
@@ -173,10 +171,11 @@ config["terminal"] = {
 }
 
 platform_toolsets = config.get("platform_toolsets")
-if not isinstance(platform_toolsets, dict):
-    platform_toolsets = {}
-platform_toolsets["homeassistant"] = toolsets
-config["platform_toolsets"] = platform_toolsets
+if isinstance(platform_toolsets, dict):
+    homeassistant_toolsets = platform_toolsets.get("homeassistant")
+    if isinstance(homeassistant_toolsets, list) and "homeassistant" not in homeassistant_toolsets:
+        platform_toolsets["homeassistant"] = ["homeassistant", *homeassistant_toolsets]
+    config["platform_toolsets"] = platform_toolsets
 
 platforms = config.get("platforms")
 if not isinstance(platforms, dict):

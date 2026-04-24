@@ -53,14 +53,6 @@ options:
     - sensor.memory_usage
   watch_all: false
   cooldown_seconds: 30
-  toolsets:
-    - homeassistant
-    - web
-    - skills
-    - todo
-    - memory
-    - session_search
-    - cronjob
   terminal_timeout: 180
   force_ipv4_dns: true
   http_proxy: ""
@@ -81,8 +73,6 @@ schema:
     - str
   watch_all: bool
   cooldown_seconds: "int(0,3600)"
-  toolsets:
-    - str
   terminal_timeout: "int(10,3600)"
   force_ipv4_dns: bool
   http_proxy: "str?"

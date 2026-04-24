@@ -35,12 +35,9 @@ configuration:
   cooldown_seconds:
     name: Cooldown seconds
     description: Minimum seconds between forwarded events for the same entity.
-  toolsets:
-    name: Toolsets
-    description: Hermes toolsets enabled for the Home Assistant platform.
   terminal_timeout:
     name: Terminal timeout
-    description: Timeout in seconds for terminal commands if the terminal toolset is enabled.
+    description: Timeout in seconds for terminal commands.
   force_ipv4_dns:
     name: Force IPv4 DNS
     description: Prefer IPv4 for Node.js network calls. Useful on HAOS systems without working IPv6 egress.
