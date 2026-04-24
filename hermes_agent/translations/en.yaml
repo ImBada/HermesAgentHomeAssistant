@@ -11,6 +11,9 @@ configuration:
   enable_dashboard:
     name: Enable dashboard
     description: Start the Hermes dashboard and expose it through Ingress.
+  ha_notification_mode:
+    name: Home Assistant notifications
+    description: Choose which Hermes responses become Home Assistant persistent notifications.
   use_supervisor_api:
     name: Use Supervisor API
     description: Use Home Assistant's internal Supervisor token and URL instead of a Long-Lived Access Token.

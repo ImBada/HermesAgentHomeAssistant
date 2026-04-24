@@ -35,11 +35,11 @@ options:
   enable_terminal: true
   terminal_port: 7681
   enable_dashboard: true
+  ha_notification_mode: errors_only
   use_supervisor_api: true
   hass_url: "http://homeassistant:8123"
   watch_domains:
     - climate
-    - binary_sensor
     - alarm_control_panel
     - light
   watch_entities: []
@@ -66,6 +66,7 @@ schema:
   enable_terminal: bool
   terminal_port: "int(1024,65535)"
   enable_dashboard: bool
+  ha_notification_mode: "list(all|errors_only|off)"
   use_supervisor_api: bool
   hass_url: url
   watch_domains:

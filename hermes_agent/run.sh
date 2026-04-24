@@ -97,6 +97,7 @@ env_values = {
     "HASS_TOKEN": hass_token,
     "TERMINAL_CWD": str(home / "workspace"),
     "TERMINAL_TIMEOUT": str(integer("terminal_timeout", 180)),
+    "HERMES_HA_NOTIFICATION_MODE": text("ha_notification_mode", "errors_only"),
     "WEB_TOOLS_DEBUG": "false",
     "VISION_TOOLS_DEBUG": "false",
     "MOA_TOOLS_DEBUG": "false",
@@ -151,6 +152,11 @@ env_path.chmod(stat.S_IRUSR | stat.S_IWUSR)
 
 toolsets = text_list("toolsets") or ["homeassistant", "web", "skills", "todo", "memory", "session_search", "cronjob"]
 
+watch_domains = text_list("watch_domains")
+legacy_noisy_domains = ["climate", "binary_sensor", "alarm_control_panel", "light"]
+if watch_domains == legacy_noisy_domains:
+    watch_domains = ["climate", "alarm_control_panel", "light"]
+
 config_path = home / "config.yaml"
 if config_path.exists():
     with config_path.open(encoding="utf-8") as handle:
@@ -183,7 +189,7 @@ if not isinstance(homeassistant_extra, dict):
     homeassistant_extra = {}
 homeassistant_extra.update({
     "url": hass_url.rstrip("/"),
-    "watch_domains": text_list("watch_domains"),
+    "watch_domains": watch_domains,
     "watch_entities": text_list("watch_entities"),
     "ignore_entities": text_list("ignore_entities"),
     "watch_all": boolean("watch_all", False),
@@ -221,14 +227,37 @@ set +a
 if [ -f "$HERMES_HOME/.addon_use_supervisor_proxy" ]; then
   "$PYTHON_BIN" <<'PY' &
 import asyncio
+import json
 import os
 
 import aiohttp
 from aiohttp import web
 
 SUPERVISOR_TOKEN = os.environ.get("SUPERVISOR_TOKEN", "").strip()
+NOTIFICATION_MODE = os.environ.get("HERMES_HA_NOTIFICATION_MODE", "errors_only").strip().lower()
 REST_BASE = "http://supervisor/core/api"
 WS_URL = "ws://supervisor/core/websocket"
+ERROR_NOTIFICATION_TERMS = (
+    "error",
+    "failed",
+    "failure",
+    "exception",
+    "traceback",
+    "critical",
+    "unavailable",
+    "unable",
+    "cannot",
+    "can't",
+    "timeout",
+    "timed out",
+    "denied",
+    "crash",
+    "오류",
+    "실패",
+    "예외",
+    "에러",
+    "타임아웃",
+)
 
 
 def supervisor_headers(content_type="application/json"):
@@ -236,6 +265,24 @@ def supervisor_headers(content_type="application/json"):
     if content_type:
         headers["Content-Type"] = content_type
     return headers
+
+
+def should_forward_notification(path, body):
+    if path.strip("/") != "services/persistent_notification/create":
+        return True
+    if NOTIFICATION_MODE == "all":
+        return True
+    if NOTIFICATION_MODE == "off":
+        return False
+    try:
+        payload = json.loads(body.decode("utf-8") if body else "{}")
+    except (json.JSONDecodeError, UnicodeDecodeError):
+        return True
+    text = " ".join(
+        str(payload.get(key, ""))
+        for key in ("title", "message", "notification_id")
+    ).lower()
+    return any(term in text for term in ERROR_NOTIFICATION_TERMS)
 
 
 async def websocket_proxy(request):
@@ -274,6 +321,10 @@ async def rest_proxy(request):
     target_url = f"{REST_BASE}/{path}" if path else REST_BASE
     body = await request.read()
     content_type = request.headers.get("Content-Type", "application/json")
+
+    if not should_forward_notification(path, body):
+        print("Suppressed non-error Home Assistant persistent notification from Hermes.", flush=True)
+        return web.json_response([])
 
     async with aiohttp.ClientSession() as session:
         async with session.request(

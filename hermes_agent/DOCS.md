@@ -51,11 +51,21 @@ If you turn `use_supervisor_api` off, set:
 
 Hermes only receives Home Assistant events matching the configured filters.
 
-- `watch_domains`: entity domains to monitor, such as `light`, `climate`, or `binary_sensor`
+- `watch_domains`: entity domains to monitor, such as `light` or `climate`; `binary_sensor` is not watched by default because activity, presence, and motion sensors can be noisy
 - `watch_entities`: exact entity IDs to monitor
 - `ignore_entities`: exact entity IDs to suppress
 - `watch_all`: forward all state changes; this is noisy and usually not recommended
 - `cooldown_seconds`: minimum seconds between events for the same entity
+
+## Notifications
+
+`ha_notification_mode` controls Home Assistant persistent notifications created by Hermes:
+
+- `errors_only` forwards only messages that look like errors or failures. This is the default.
+- `all` forwards every Hermes response as a Home Assistant notification.
+- `off` suppresses all Hermes persistent notifications.
+
+This filtering is applied by the add-on's Supervisor API compatibility proxy. It does not affect Hermes' ability to read Home Assistant state changes or call Home Assistant services.
 
 ## Tool access
 
