@@ -357,6 +357,7 @@ ENABLE_TERMINAL="$(read_runtime '.enable_terminal')"
 TERMINAL_PORT="$(read_runtime '.terminal_port')"
 ENABLE_DASHBOARD="$(read_runtime '.enable_dashboard')"
 DASHBOARD_PORT="9118"
+DASHBOARD_PROXY_PORT="49118"
 NGINX_LOG_LEVEL="$(read_runtime '.nginx_log_level')"
 
 GW_PID=""
@@ -416,8 +417,8 @@ shutdown() {
 trap shutdown TERM INT
 
 if [ "$ENABLE_DASHBOARD" = "true" ]; then
-  echo "Starting Hermes dashboard on 0.0.0.0:${DASHBOARD_PORT} ..."
-  /opt/hermes/docker/entrypoint.sh dashboard --host 0.0.0.0 --port "$DASHBOARD_PORT" --no-open &
+  echo "Starting Hermes dashboard on 127.0.0.1:${DASHBOARD_PORT} ..."
+  /opt/hermes/docker/entrypoint.sh dashboard --host 127.0.0.1 --port "$DASHBOARD_PORT" --no-open &
   DASHBOARD_PID=$!
 else
   echo "Hermes dashboard disabled."
@@ -436,6 +437,7 @@ DISK_PCT="$(df -h "$HERMES_HOME" | awk 'NR==2{print $5}')"
 
 TERMINAL_PORT="$TERMINAL_PORT" \
 DASHBOARD_PORT="$DASHBOARD_PORT" \
+DASHBOARD_PROXY_PORT="$DASHBOARD_PROXY_PORT" \
 ENABLE_TERMINAL="$ENABLE_TERMINAL" \
 ENABLE_DASHBOARD="$ENABLE_DASHBOARD" \
 DISK_TOTAL="$DISK_TOTAL" \
@@ -463,7 +465,7 @@ while [ "$SHUTTING_DOWN" = "false" ]; do
   if [ -n "$DASHBOARD_PID" ] && ! kill -0 "$DASHBOARD_PID" >/dev/null 2>&1; then
     echo "WARN: Hermes dashboard exited. Restarting in 3s..."
     sleep 3
-    /opt/hermes/docker/entrypoint.sh dashboard --host 0.0.0.0 --port "$DASHBOARD_PORT" --no-open &
+    /opt/hermes/docker/entrypoint.sh dashboard --host 127.0.0.1 --port "$DASHBOARD_PORT" --no-open &
     DASHBOARD_PID=$!
   fi
   if [ -n "$TTYD_PID" ] && ! kill -0 "$TTYD_PID" >/dev/null 2>&1; then

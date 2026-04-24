@@ -19,10 +19,10 @@ panel_title: Hermes Agent
 panel_icon: mdi:robot
 ports:
   48099/tcp: 9119
-  9118/tcp: 9118
+  49118/tcp: 9118
 ports_description:
   48099/tcp: External Hermes Agent web UI and terminal proxy.
-  9118/tcp: External Hermes dashboard.
+  49118/tcp: External Hermes dashboard.
 
 backup: hot
 backup_exclude:

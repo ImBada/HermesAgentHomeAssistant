@@ -12,6 +12,7 @@ def main():
 
     terminal_port = os.environ.get("TERMINAL_PORT", "7681")
     dashboard_port = os.environ.get("DASHBOARD_PORT", "9118")
+    dashboard_proxy_port = os.environ.get("DASHBOARD_PROXY_PORT", "49118")
     enable_terminal = os.environ.get("ENABLE_TERMINAL", "true")
     enable_dashboard = os.environ.get("ENABLE_DASHBOARD", "true")
     nginx_log_level = os.environ.get("NGINX_LOG_LEVEL", "minimal")
@@ -35,7 +36,10 @@ def main():
     conf = conf.replace("__NGINX_ACCESS_LOG__", access_log)
     conf = conf.replace("__NGINX_MIME_TYPES__", mime_types_path)
     conf = conf.replace("__TERMINAL_PORT__", terminal_port)
+    conf = conf.replace("__DASHBOARD_PORT__", dashboard_port)
+    conf = conf.replace("__DASHBOARD_PROXY_PORT__", dashboard_proxy_port)
     conf = conf.replace("__TERMINAL_BLOCK__", "" if enable_terminal == "true" else "return 404;")
+    conf = conf.replace("__DASHBOARD_BLOCK__", "" if enable_dashboard == "true" else "return 404;")
     nginx_out_path.parent.mkdir(parents=True, exist_ok=True)
     nginx_out_path.write_text(conf, encoding="utf-8")
 
