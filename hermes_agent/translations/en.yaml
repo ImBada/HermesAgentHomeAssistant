@@ -1,0 +1,85 @@
+configuration:
+  timezone:
+    name: Timezone
+    description: Timezone used inside the add-on container.
+  enable_terminal:
+    name: Enable terminal
+    description: Show a web terminal in the Home Assistant Ingress page.
+  terminal_port:
+    name: Terminal port
+    description: Internal port for the web terminal.
+  enable_dashboard:
+    name: Enable dashboard
+    description: Start the Hermes dashboard and expose it through Ingress.
+  dashboard_port:
+    name: Dashboard port
+    description: Internal port for the Hermes dashboard.
+  use_supervisor_api:
+    name: Use Supervisor API
+    description: Use Home Assistant's internal Supervisor token and URL instead of a Long-Lived Access Token.
+  hass_url:
+    name: Home Assistant URL
+    description: Home Assistant base URL used when Supervisor API mode is disabled.
+  model:
+    name: Model
+    description: Default Hermes model identifier.
+  provider:
+    name: Provider
+    description: Hermes inference provider.
+  base_url:
+    name: Base URL
+    description: Optional OpenAI-compatible API base URL for custom providers.
+  watch_domains:
+    name: Watched domains
+    description: Entity domains whose state changes should be forwarded to Hermes.
+  watch_entities:
+    name: Watched entities
+    description: Exact entity IDs whose state changes should be forwarded to Hermes.
+  ignore_entities:
+    name: Ignored entities
+    description: Exact entity IDs to suppress before other filters are applied.
+  watch_all:
+    name: Watch all state changes
+    description: Forward every state change. This can be very noisy.
+  cooldown_seconds:
+    name: Cooldown seconds
+    description: Minimum seconds between forwarded events for the same entity.
+  toolsets:
+    name: Toolsets
+    description: Hermes toolsets enabled for the Home Assistant platform.
+  terminal_timeout:
+    name: Terminal timeout
+    description: Timeout in seconds for terminal commands if the terminal toolset is enabled.
+  force_ipv4_dns:
+    name: Force IPv4 DNS
+    description: Prefer IPv4 for Node.js network calls. Useful on HAOS systems without working IPv6 egress.
+  http_proxy:
+    name: HTTP proxy
+    description: Optional outbound HTTP/HTTPS proxy URL.
+  nginx_log_level:
+    name: Nginx log level
+    description: Ingress proxy access log verbosity.
+  personality:
+    name: Personality
+    description: Contents written to Hermes SOUL.md.
+  openrouter_api_key:
+    name: OpenRouter API key
+    description: Optional OpenRouter API key.
+  nous_api_key:
+    name: Nous API key
+    description: Optional Nous Portal API key.
+  anthropic_api_key:
+    name: Anthropic API key
+    description: Optional Anthropic API key.
+  openai_api_key:
+    name: OpenAI API key
+    description: Optional OpenAI or OpenAI-compatible API key.
+  google_api_key:
+    name: Google API key
+    description: Optional Google Gemini API key.
+  custom_api_key:
+    name: Custom API key
+    description: Optional API key for a custom OpenAI-compatible endpoint.
+  hass_token:
+    name: Home Assistant token
+    description: Optional Long-Lived Access Token when not using the Supervisor API.

@@ -1,0 +1,62 @@
+#!/usr/bin/env python3
+import os
+from pathlib import Path
+
+
+def main():
+    nginx_tpl_path = Path(os.environ.get("NGINX_TEMPLATE", "/etc/nginx/nginx.conf.tpl"))
+    landing_tpl_path = Path(os.environ.get("LANDING_TEMPLATE", "/etc/nginx/landing.html.tpl"))
+    nginx_out_path = Path(os.environ.get("NGINX_OUTPUT", "/etc/nginx/nginx.conf"))
+    landing_out_dir = Path(os.environ.get("LANDING_OUTPUT_DIR", "/etc/nginx/html"))
+
+    terminal_port = os.environ.get("TERMINAL_PORT", "7681")
+    dashboard_port = os.environ.get("DASHBOARD_PORT", "9119")
+    enable_terminal = os.environ.get("ENABLE_TERMINAL", "true")
+    enable_dashboard = os.environ.get("ENABLE_DASHBOARD", "true")
+    nginx_log_level = os.environ.get("NGINX_LOG_LEVEL", "minimal")
+
+    disk_total = os.environ.get("DISK_TOTAL", "")
+    disk_used = os.environ.get("DISK_USED", "")
+    disk_avail = os.environ.get("DISK_AVAIL", "")
+    disk_pct = os.environ.get("DISK_PCT", "")
+
+    access_log = (
+        "map $http_user_agent $loggable {\n"
+        "    ~HomeAssistant 0;\n"
+        "    default 1;\n"
+        "  }\n"
+        "  access_log /dev/stdout combined if=$loggable;"
+        if nginx_log_level == "minimal"
+        else "access_log /dev/stdout;"
+    )
+
+    conf = nginx_tpl_path.read_text(encoding="utf-8")
+    conf = conf.replace("__NGINX_ACCESS_LOG__", access_log)
+    conf = conf.replace("__TERMINAL_PORT__", terminal_port)
+    conf = conf.replace("__DASHBOARD_PORT__", dashboard_port)
+    conf = conf.replace("__TERMINAL_BLOCK__", "" if enable_terminal == "true" else "return 404;")
+    conf = conf.replace("__DASHBOARD_BLOCK__", "" if enable_dashboard == "true" else "return 404;")
+    nginx_out_path.parent.mkdir(parents=True, exist_ok=True)
+    nginx_out_path.write_text(conf, encoding="utf-8")
+
+    landing = landing_tpl_path.read_text(encoding="utf-8")
+    replacements = {
+        "__ENABLE_TERMINAL__": enable_terminal,
+        "__ENABLE_DASHBOARD__": enable_dashboard,
+        "__DISK_TOTAL__": disk_total,
+        "__DISK_USED__": disk_used,
+        "__DISK_AVAIL__": disk_avail,
+        "__DISK_PCT__": disk_pct,
+    }
+    for key, value in replacements.items():
+        landing = landing.replace(key, value)
+
+    landing_out_dir.mkdir(parents=True, exist_ok=True)
+    out_file = landing_out_dir / "index.html"
+    out_file.write_text(landing, encoding="utf-8")
+    landing_out_dir.chmod(0o755)
+    out_file.chmod(0o644)
+
+
+if __name__ == "__main__":
+    main()
