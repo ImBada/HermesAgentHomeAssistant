@@ -1,6 +1,6 @@
 # Hermes Agent Home Assistant Add-on
 
-Home Assistant add-on repository for running [Hermes Agent](https://github.com/NousResearch/hermes-agent) as a supervised Home Assistant app.
+Home Assistant add-on repository for running [Hermes Agent](https://github.com/NousResearch/hermes-agent) as a supervised Home Assistant app on Home Assistant OS (HAOS) and other Home Assistant Supervisor installations.
 
 The add-on wraps the official `nousresearch/hermes-agent` container and configures Hermes' built-in Home Assistant gateway. It can listen to selected Home Assistant state changes, let Hermes react to them, and forward only error notifications to Home Assistant by default.
 
