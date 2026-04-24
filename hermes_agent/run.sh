@@ -316,6 +316,7 @@ NGINX_PID=""
 SHUTTING_DOWN=false
 HERMES_TERMINAL_HOME="$HERMES_HOME/home"
 HERMES_TERMINAL_BASHRC="$HERMES_TERMINAL_HOME/.bashrc"
+HERMES_TERMINAL_LAUNCHER="$HERMES_HOME/terminal-shell"
 
 mkdir -p "$HERMES_TERMINAL_HOME" "$HERMES_HOME/workspace"
 
@@ -329,20 +330,25 @@ cd "$HERMES_HOME/workspace" 2>/dev/null || true
 export PS1='hermes@\h:\w\$ '
 EOF
 
+cat > "$HERMES_TERMINAL_LAUNCHER" <<EOF
+#!/usr/bin/env bash
+export HERMES_HOME="$HERMES_HOME"
+export HOME="$HERMES_TERMINAL_HOME"
+export USER=hermes
+export LOGNAME=hermes
+export PATH="/opt/hermes/.venv/bin:$HERMES_HOME/.local/bin:\$PATH"
+exec bash --rcfile "$HERMES_TERMINAL_BASHRC" -i
+EOF
+
+chmod +x "$HERMES_TERMINAL_LAUNCHER"
+
 if id hermes >/dev/null 2>&1; then
   chown -R hermes:hermes "$HERMES_HOME" 2>/dev/null || true
 fi
 
 start_terminal() {
   echo "Starting web terminal on 127.0.0.1:${TERMINAL_PORT} ..."
-  env \
-    HERMES_HOME="$HERMES_HOME" \
-    HOME="$HERMES_TERMINAL_HOME" \
-    USER=hermes \
-    LOGNAME=hermes \
-    PATH="/opt/hermes/.venv/bin:$HERMES_HOME/.local/bin:$PATH" \
-    ttyd -W -i 127.0.0.1 -p "$TERMINAL_PORT" -b /terminal \
-    bash --rcfile "$HERMES_TERMINAL_BASHRC" -i &
+  ttyd -W -i 127.0.0.1 -p "$TERMINAL_PORT" -b /terminal "$HERMES_TERMINAL_LAUNCHER" &
   TTYD_PID=$!
 }
 
