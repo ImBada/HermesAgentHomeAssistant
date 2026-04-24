@@ -333,12 +333,12 @@ fi
 start_terminal() {
   echo "Starting web terminal on 127.0.0.1:${TERMINAL_PORT} ..."
   if command -v gosu >/dev/null 2>&1 && id hermes >/dev/null 2>&1; then
-    env \
+    gosu hermes env \
       HERMES_HOME="$HERMES_HOME" \
       HOME="$HERMES_TERMINAL_HOME" \
       PATH="/opt/hermes/.venv/bin:$HERMES_HOME/.local/bin:$PATH" \
       ttyd -W -i 127.0.0.1 -p "$TERMINAL_PORT" -b /terminal \
-      gosu hermes bash --rcfile "$HERMES_TERMINAL_BASHRC" -i &
+      bash --rcfile "$HERMES_TERMINAL_BASHRC" -i &
   else
     env \
       HERMES_HOME="$HERMES_HOME" \
