@@ -322,8 +322,11 @@ mkdir -p "$HERMES_TERMINAL_HOME" "$HERMES_HOME/workspace"
 cat > "$HERMES_TERMINAL_BASHRC" <<EOF
 export HERMES_HOME="$HERMES_HOME"
 export HOME="$HERMES_TERMINAL_HOME"
+export USER=hermes
+export LOGNAME=hermes
 export PATH="/opt/hermes/.venv/bin:$HERMES_HOME/.local/bin:\$PATH"
 cd "$HERMES_HOME/workspace" 2>/dev/null || true
+export PS1='hermes@\h:\w\$ '
 EOF
 
 if id hermes >/dev/null 2>&1; then
@@ -332,21 +335,14 @@ fi
 
 start_terminal() {
   echo "Starting web terminal on 127.0.0.1:${TERMINAL_PORT} ..."
-  if command -v gosu >/dev/null 2>&1 && id hermes >/dev/null 2>&1; then
-    gosu hermes env \
-      HERMES_HOME="$HERMES_HOME" \
-      HOME="$HERMES_TERMINAL_HOME" \
-      PATH="/opt/hermes/.venv/bin:$HERMES_HOME/.local/bin:$PATH" \
-      ttyd -W -i 127.0.0.1 -p "$TERMINAL_PORT" -b /terminal \
-      bash --rcfile "$HERMES_TERMINAL_BASHRC" -i &
-  else
-    env \
-      HERMES_HOME="$HERMES_HOME" \
-      HOME="$HERMES_TERMINAL_HOME" \
-      PATH="/opt/hermes/.venv/bin:$HERMES_HOME/.local/bin:$PATH" \
-      ttyd -W -i 127.0.0.1 -p "$TERMINAL_PORT" -b /terminal \
-      bash --rcfile "$HERMES_TERMINAL_BASHRC" -i &
-  fi
+  env \
+    HERMES_HOME="$HERMES_HOME" \
+    HOME="$HERMES_TERMINAL_HOME" \
+    USER=hermes \
+    LOGNAME=hermes \
+    PATH="/opt/hermes/.venv/bin:$HERMES_HOME/.local/bin:$PATH" \
+    ttyd -W -i 127.0.0.1 -p "$TERMINAL_PORT" -b /terminal \
+    bash --rcfile "$HERMES_TERMINAL_BASHRC" -i &
   TTYD_PID=$!
 }
 

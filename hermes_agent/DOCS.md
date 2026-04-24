@@ -32,7 +32,7 @@ hermes tools
 hermes logs
 ```
 
-The terminal starts as the `hermes` user in `/config/.hermes/workspace` with the Hermes virtualenv on `PATH`, so the `hermes` command should be available immediately.
+The terminal opens in `/config/.hermes/workspace` with the Hermes virtualenv on `PATH`, so the `hermes` command should be available immediately.
 
 ## Home Assistant access
 
