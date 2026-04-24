@@ -2,7 +2,7 @@
 
 Hermes Agent runs as a Home Assistant app/add-on and connects to Home Assistant through Hermes' built-in Home Assistant gateway adapter.
 
-The add-on keeps all user data in `/config/.hermes`, exposes a small Home Assistant Ingress page, starts an optional Hermes dashboard, and embeds an optional web terminal for setup and maintenance.
+The add-on keeps all user data in `addon_configs/XXXXXXXX_hermes_agent/.hermes`, exposes a small Home Assistant Ingress page, starts an optional Hermes dashboard, and embeds an optional web terminal for setup and maintenance.
 
 ## Required setup
 
@@ -14,7 +14,7 @@ hermes model
 hermes config edit
 ```
 
-The add-on only manages container, Ingress, terminal/dashboard, and Home Assistant connection settings. Existing Hermes `.env`, `config.yaml`, and `SOUL.md` settings under `/config/.hermes` are preserved across add-on restarts.
+The add-on only manages container, Ingress, terminal/dashboard, and Home Assistant connection settings. Existing Hermes `.env`, `config.yaml`, and `SOUL.md` settings under `addon_configs/XXXXXXXX_hermes_agent/.hermes` are preserved across add-on restarts.
 
 ## Ingress UI
 
@@ -32,7 +32,7 @@ hermes tools
 hermes logs
 ```
 
-The terminal opens in `/config/.hermes/workspace` with the Hermes virtualenv on `PATH`, so the `hermes` command should be available immediately.
+The terminal opens in `addon_configs/XXXXXXXX_hermes_agent/.hermes/workspace` with the Hermes virtualenv on `PATH`, so the `hermes` command should be available immediately.
 
 When the add-on dashboard is enabled, the managed dashboard runs on `127.0.0.1:9118` inside the add-on and nginx exposes it through a dedicated dashboard proxy port mapped to host port `9118`. The nginx-backed web UI and terminal remain on host port `9119`, so `http://<home-assistant-host>:9119/` opens the add-on web UI and `http://<home-assistant-host>:9118/` opens the Hermes dashboard from trusted networks such as Tailscale.
 
@@ -69,4 +69,4 @@ This filtering is applied by the add-on's Supervisor API compatibility proxy. It
 
 ## Data
 
-Hermes data is stored in `/config/.hermes` and is included in Home Assistant backups, except for cache paths listed in the add-on backup exclusions.
+Hermes data is stored in `addon_configs/XXXXXXXX_hermes_agent/.hermes` and is included in Home Assistant backups, except for cache paths listed in the add-on backup exclusions.
