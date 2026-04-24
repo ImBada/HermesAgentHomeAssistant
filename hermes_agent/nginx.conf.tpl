@@ -41,62 +41,6 @@ http {
       proxy_send_timeout 3600s;
     }
 
-    location = /dashboard {
-      return 302 /dashboard/;
-    }
-
-    location ^~ /dashboard/ {
-      __DASHBOARD_BLOCK__
-      rewrite ^/dashboard/(.*)$ /$1 break;
-      proxy_intercept_errors on;
-      error_page 404 = /dashboard/;
-      proxy_pass http://127.0.0.1:__DASHBOARD_PORT__;
-      include __DASHBOARD_PROXY_INCLUDE__;
-    }
-
-    location ^~ /dashboard/assets/ {
-      __DASHBOARD_BLOCK__
-      proxy_pass http://127.0.0.1:__DASHBOARD_PORT__/assets/;
-      include __DASHBOARD_PROXY_INCLUDE__;
-    }
-
-    location ^~ /dashboard/api/ {
-      __DASHBOARD_BLOCK__
-      proxy_pass http://127.0.0.1:__DASHBOARD_PORT__/api/;
-      include __DASHBOARD_PROXY_INCLUDE__;
-    }
-
-    location ^~ /dashboard/ws {
-      __DASHBOARD_BLOCK__
-      proxy_pass http://127.0.0.1:__DASHBOARD_PORT__/ws;
-      include __DASHBOARD_PROXY_INCLUDE__;
-    }
-
-    # Fallbacks for direct asset/API requests from the dashboard.
-    location ^~ /assets/ {
-      __DASHBOARD_BLOCK__
-      proxy_pass http://127.0.0.1:__DASHBOARD_PORT__;
-      include __DASHBOARD_PROXY_INCLUDE__;
-    }
-
-    location ^~ /api/ {
-      __DASHBOARD_BLOCK__
-      proxy_pass http://127.0.0.1:__DASHBOARD_PORT__;
-      include __DASHBOARD_PROXY_INCLUDE__;
-    }
-
-    location ^~ /ws {
-      __DASHBOARD_BLOCK__
-      proxy_pass http://127.0.0.1:__DASHBOARD_PORT__;
-      include __DASHBOARD_PROXY_INCLUDE__;
-    }
-
-    location = /favicon.ico {
-      __DASHBOARD_BLOCK__
-      proxy_pass http://127.0.0.1:__DASHBOARD_PORT__;
-      include __DASHBOARD_PROXY_INCLUDE__;
-    }
-
     location / {
       return 404;
     }

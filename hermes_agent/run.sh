@@ -416,8 +416,8 @@ shutdown() {
 trap shutdown TERM INT
 
 if [ "$ENABLE_DASHBOARD" = "true" ]; then
-  echo "Starting Hermes dashboard on 127.0.0.1:${DASHBOARD_PORT} ..."
-  /opt/hermes/docker/entrypoint.sh dashboard --host 127.0.0.1 --port "$DASHBOARD_PORT" --no-open &
+  echo "Starting Hermes dashboard on 0.0.0.0:${DASHBOARD_PORT} ..."
+  /opt/hermes/docker/entrypoint.sh dashboard --host 0.0.0.0 --port "$DASHBOARD_PORT" --no-open &
   DASHBOARD_PID=$!
 else
   echo "Hermes dashboard disabled."
@@ -463,7 +463,7 @@ while [ "$SHUTTING_DOWN" = "false" ]; do
   if [ -n "$DASHBOARD_PID" ] && ! kill -0 "$DASHBOARD_PID" >/dev/null 2>&1; then
     echo "WARN: Hermes dashboard exited. Restarting in 3s..."
     sleep 3
-    /opt/hermes/docker/entrypoint.sh dashboard --host 127.0.0.1 --port "$DASHBOARD_PORT" --no-open &
+    /opt/hermes/docker/entrypoint.sh dashboard --host 0.0.0.0 --port "$DASHBOARD_PORT" --no-open &
     DASHBOARD_PID=$!
   fi
   if [ -n "$TTYD_PID" ] && ! kill -0 "$TTYD_PID" >/dev/null 2>&1; then

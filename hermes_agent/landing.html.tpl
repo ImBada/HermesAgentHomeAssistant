@@ -37,7 +37,7 @@
         <p class="muted">Runs Hermes inside Home Assistant with event monitoring, smart-home tools, dashboard access, and a maintenance terminal.</p>
       </div>
       <div class="actions">
-        <a class="btn" href="./dashboard/" target="_blank">Dashboard</a>
+        <a class="btn" id="dashboard-link" href="http://localhost:__DASHBOARD_PORT__/" target="_blank" rel="noreferrer">Dashboard</a>
         <a class="btn secondary" href="./terminal/" target="_self">Terminal</a>
       </div>
     </header>
@@ -73,5 +73,11 @@
       <iframe src="./terminal/" title="Hermes terminal"></iframe>
     </div>
   </main>
+  <script>
+    const dashboardLink = document.getElementById('dashboard-link');
+    if (dashboardLink) {
+      dashboardLink.href = `http://${window.location.hostname}:__DASHBOARD_PORT__/`;
+    }
+  </script>
 </body>
 </html>

@@ -6,7 +6,7 @@ The add-on wraps the official `nousresearch/hermes-agent` container and configur
 
 The add-on stores Hermes state in `/config/.hermes` and exposes a small Home Assistant Ingress page with dashboard and terminal access.
 
-The same nginx-backed web UI is also exposed on host port `9119` for trusted network access, with the Hermes dashboard available at `/dashboard/`.
+The same nginx-backed web UI is also exposed on host port `9119` for trusted network access, while the Hermes dashboard is exposed separately on host port `9118`.
 
 ## Install
 
