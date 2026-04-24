@@ -49,7 +49,7 @@
       </div>
       <div class="panel">
         <span class="label">Dashboard</span>
-        <span class="value">__DASHBOARD_STATUS__ on port __DASHBOARD_PORT__</span>
+        <span class="value">__DASHBOARD_STATUS__</span>
       </div>
       <div class="panel">
         <span class="label">Terminal</span>
