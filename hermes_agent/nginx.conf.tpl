@@ -52,7 +52,7 @@ http {
       proxy_http_version 1.1;
       proxy_set_header Upgrade $http_upgrade;
       proxy_set_header Connection "upgrade";
-      proxy_set_header Host $host;
+      proxy_set_header Host 127.0.0.1;
       proxy_set_header X-Forwarded-Host $host;
       proxy_set_header X-Forwarded-Prefix /dashboard;
       proxy_set_header X-Real-IP $remote_addr;
@@ -81,7 +81,8 @@ http {
     location ^~ /assets/ {
       __DASHBOARD_BLOCK__
       proxy_pass http://127.0.0.1:__DASHBOARD_PORT__;
-      proxy_set_header Host $host;
+      proxy_set_header Host 127.0.0.1;
+      proxy_set_header X-Forwarded-Host $host;
       proxy_set_header Accept-Encoding "";
       sub_filter_once off;
       sub_filter_types text/css application/javascript text/javascript application/json;
@@ -99,7 +100,8 @@ http {
       proxy_http_version 1.1;
       proxy_set_header Upgrade $http_upgrade;
       proxy_set_header Connection "upgrade";
-      proxy_set_header Host $host;
+      proxy_set_header Host 127.0.0.1;
+      proxy_set_header X-Forwarded-Host $host;
       proxy_read_timeout 3600s;
       proxy_send_timeout 3600s;
       proxy_buffering off;
@@ -108,7 +110,8 @@ http {
     location = /favicon.ico {
       __DASHBOARD_BLOCK__
       proxy_pass http://127.0.0.1:__DASHBOARD_PORT__;
-      proxy_set_header Host $host;
+      proxy_set_header Host 127.0.0.1;
+      proxy_set_header X-Forwarded-Host $host;
     }
 
     location / {
