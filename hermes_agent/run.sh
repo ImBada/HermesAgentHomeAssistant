@@ -357,7 +357,7 @@ read_runtime() {
 ENABLE_TERMINAL="$(read_runtime '.enable_terminal')"
 TERMINAL_PORT="$(read_runtime '.terminal_port')"
 ENABLE_DASHBOARD="$(read_runtime '.enable_dashboard')"
-DASHBOARD_PORT="9119"
+DASHBOARD_PORT="9118"
 NGINX_LOG_LEVEL="$(read_runtime '.nginx_log_level')"
 
 GW_PID=""

@@ -17,6 +17,10 @@ ingress: true
 ingress_port: 48099
 panel_title: Hermes Agent
 panel_icon: mdi:robot
+ports:
+  48099/tcp: 9119
+ports_description:
+  48099/tcp: External Hermes Agent web UI and dashboard proxy.
 
 backup: hot
 backup_exclude:

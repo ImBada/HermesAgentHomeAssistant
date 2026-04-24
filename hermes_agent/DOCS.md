@@ -34,7 +34,7 @@ hermes logs
 
 The terminal opens in `/config/.hermes/workspace` with the Hermes virtualenv on `PATH`, so the `hermes` command should be available immediately.
 
-When the add-on dashboard is enabled, Hermes runs on its default internal port `9119` and nginx exposes it through Home Assistant Ingress at `/dashboard/`.
+When the add-on dashboard is enabled, the managed dashboard runs on the add-on's internal port `9118` and nginx exposes it through Home Assistant Ingress at `/dashboard/`. The add-on also maps the nginx proxy to host port `9119`, so `http://<home-assistant-host>:9119/` opens the same add-on web UI from trusted networks such as Tailscale. Hermes' CLI default dashboard port `9119` remains free inside the container for manual terminal use.
 
 ## Home Assistant access
 

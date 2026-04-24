@@ -10,6 +10,7 @@ def main():
     landing_out_dir = Path(os.environ.get("LANDING_OUTPUT_DIR", "/etc/nginx/html"))
 
     terminal_port = os.environ.get("TERMINAL_PORT", "7681")
+    dashboard_port = os.environ.get("DASHBOARD_PORT", "9118")
     enable_terminal = os.environ.get("ENABLE_TERMINAL", "true")
     enable_dashboard = os.environ.get("ENABLE_DASHBOARD", "true")
     nginx_log_level = os.environ.get("NGINX_LOG_LEVEL", "minimal")
@@ -32,6 +33,7 @@ def main():
     conf = nginx_tpl_path.read_text(encoding="utf-8")
     conf = conf.replace("__NGINX_ACCESS_LOG__", access_log)
     conf = conf.replace("__TERMINAL_PORT__", terminal_port)
+    conf = conf.replace("__DASHBOARD_PORT__", dashboard_port)
     conf = conf.replace("__TERMINAL_BLOCK__", "" if enable_terminal == "true" else "return 404;")
     conf = conf.replace("__DASHBOARD_BLOCK__", "" if enable_dashboard == "true" else "return 404;")
     nginx_out_path.parent.mkdir(parents=True, exist_ok=True)
@@ -45,6 +47,7 @@ def main():
         "__ENABLE_DASHBOARD__": enable_dashboard,
         "__TERMINAL_STATUS__": terminal_status,
         "__DASHBOARD_STATUS__": dashboard_status,
+        "__DASHBOARD_PORT__": dashboard_port,
         "__DISK_TOTAL__": disk_total,
         "__DISK_USED__": disk_used,
         "__DISK_AVAIL__": disk_avail,

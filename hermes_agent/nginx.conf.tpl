@@ -48,7 +48,7 @@ http {
     location ^~ /dashboard/ {
       __DASHBOARD_BLOCK__
       rewrite ^/dashboard/(.*)$ /$1 break;
-      proxy_pass http://127.0.0.1:9119;
+      proxy_pass http://127.0.0.1:__DASHBOARD_PORT__;
       proxy_http_version 1.1;
       proxy_set_header Upgrade $http_upgrade;
       proxy_set_header Connection "upgrade";
@@ -59,7 +59,7 @@ http {
       proxy_set_header X-Forwarded-For $remote_addr;
       proxy_set_header X-Forwarded-Proto $scheme;
       proxy_set_header Accept-Encoding "";
-      proxy_redirect http://127.0.0.1:9119/ /dashboard/;
+      proxy_redirect http://127.0.0.1:__DASHBOARD_PORT__/ /dashboard/;
       proxy_read_timeout 3600s;
       proxy_send_timeout 3600s;
       proxy_buffering off;
@@ -80,7 +80,7 @@ http {
     # Fallbacks for direct asset/API requests from the dashboard.
     location ^~ /assets/ {
       __DASHBOARD_BLOCK__
-      proxy_pass http://127.0.0.1:9119;
+      proxy_pass http://127.0.0.1:__DASHBOARD_PORT__;
       proxy_set_header Host $host;
       proxy_set_header Accept-Encoding "";
       sub_filter_once off;
@@ -95,7 +95,7 @@ http {
 
     location ^~ /api/ {
       __DASHBOARD_BLOCK__
-      proxy_pass http://127.0.0.1:9119;
+      proxy_pass http://127.0.0.1:__DASHBOARD_PORT__;
       proxy_http_version 1.1;
       proxy_set_header Upgrade $http_upgrade;
       proxy_set_header Connection "upgrade";
@@ -107,7 +107,7 @@ http {
 
     location = /favicon.ico {
       __DASHBOARD_BLOCK__
-      proxy_pass http://127.0.0.1:9119;
+      proxy_pass http://127.0.0.1:__DASHBOARD_PORT__;
       proxy_set_header Host $host;
     }
 
