@@ -53,21 +53,44 @@ http {
       proxy_set_header Upgrade $http_upgrade;
       proxy_set_header Connection "upgrade";
       proxy_set_header Host $host;
+      proxy_set_header X-Forwarded-Host $host;
+      proxy_set_header X-Forwarded-Prefix /dashboard;
       proxy_set_header X-Real-IP $remote_addr;
       proxy_set_header X-Forwarded-For $remote_addr;
       proxy_set_header X-Forwarded-Proto $scheme;
+      proxy_set_header Accept-Encoding "";
+      proxy_redirect http://127.0.0.1:9119/ /dashboard/;
       proxy_read_timeout 3600s;
       proxy_send_timeout 3600s;
       proxy_buffering off;
+      sub_filter_once off;
+      sub_filter_types text/css application/javascript text/javascript application/json;
+      sub_filter 'href="/' 'href="./';
+      sub_filter 'src="/' 'src="./';
+      sub_filter 'action="/' 'action="./';
+      sub_filter 'url(/' 'url(./';
+      sub_filter '"/assets/' '"./assets/';
+      sub_filter "'/assets/" "'./assets/";
+      sub_filter '"/api/' '"./api/';
+      sub_filter "'/api/" "'./api/";
+      sub_filter '"/ws' '"./ws';
+      sub_filter "'/ws" "'./ws";
     }
 
-    # Hermes dashboard currently serves Vite-style absolute asset/API paths.
-    # Proxy the common root-level paths so the dashboard still works behind
-    # the /dashboard/ ingress entry point.
+    # Fallbacks for direct asset/API requests from the dashboard.
     location ^~ /assets/ {
       __DASHBOARD_BLOCK__
       proxy_pass http://127.0.0.1:9119;
       proxy_set_header Host $host;
+      proxy_set_header Accept-Encoding "";
+      sub_filter_once off;
+      sub_filter_types text/css application/javascript text/javascript application/json;
+      sub_filter '"/assets/' '"./assets/';
+      sub_filter "'/assets/" "'./assets/";
+      sub_filter '"/api/' '"./api/';
+      sub_filter "'/api/" "'./api/";
+      sub_filter '"/ws' '"./ws';
+      sub_filter "'/ws" "'./ws";
     }
 
     location ^~ /api/ {

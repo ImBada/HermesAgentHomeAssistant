@@ -34,6 +34,8 @@ hermes logs
 
 The terminal opens in `/config/.hermes/workspace` with the Hermes virtualenv on `PATH`, so the `hermes` command should be available immediately.
 
+When the add-on dashboard is enabled, Hermes runs on its default internal port `9119` and nginx exposes it through Home Assistant Ingress at `/dashboard/`.
+
 ## Home Assistant access
 
 `use_supervisor_api` is enabled by default. In this mode the add-on uses Home Assistant's Supervisor-provided token. The add-on starts a tiny localhost compatibility proxy so Hermes can use its normal `/api/...` paths while Home Assistant receives requests through the Supervisor Core REST and WebSocket proxies.
