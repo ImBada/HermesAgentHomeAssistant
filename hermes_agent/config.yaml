@@ -36,11 +36,8 @@ options:
   enable_terminal: true
   terminal_port: 7681
   enable_dashboard: true
-  dashboard_port: 9119
   use_supervisor_api: true
   hass_url: "http://homeassistant:8123"
-  model: "anthropic/claude-opus-4.6"
-  provider: "auto"
   watch_domains:
     - climate
     - binary_sensor
@@ -65,18 +62,13 @@ options:
   force_ipv4_dns: true
   http_proxy: ""
   nginx_log_level: minimal
-  personality: "You are Hermes Agent running inside Home Assistant. Be concise, practical, and careful with smart-home actions."
 schema:
   timezone: str
   enable_terminal: bool
   terminal_port: "int(1024,65535)"
   enable_dashboard: bool
-  dashboard_port: "int(1024,65535)"
   use_supervisor_api: bool
   hass_url: url
-  model: str
-  provider: "list(auto|openrouter|nous|nous-api|anthropic|openai-codex|gemini|custom)"
-  base_url: "str?"
   watch_domains:
     - str
   watch_entities:
@@ -91,11 +83,4 @@ schema:
   force_ipv4_dns: bool
   http_proxy: "str?"
   nginx_log_level: "list(full|minimal)"
-  personality: str
-  openrouter_api_key: "password?"
-  nous_api_key: "password?"
-  anthropic_api_key: "password?"
-  openai_api_key: "password?"
-  google_api_key: "password?"
-  custom_api_key: "password?"
   hass_token: "password?"

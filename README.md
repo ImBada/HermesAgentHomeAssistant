@@ -14,10 +14,11 @@ The add-on layout and user experience are modeled after [OpenClawHomeAssistant](
    `https://github.com/ImBada/HermesAgentHomeAssistant`
 
 3. Install **Hermes Agent**.
-4. Configure at least one LLM provider key, then start the add-on.
+4. Start the add-on, open the terminal or dashboard, then configure Hermes with `hermes setup` / `hermes model`.
 
 ## Notes
 
 - By default the add-on uses Home Assistant's Supervisor API token, so you do not need to create a Long-Lived Access Token.
+- Model, provider, API key, and persona settings belong to Hermes itself under `/config/.hermes`; the add-on does not overwrite them on restart.
 - The add-on stores Hermes data under `/config/.hermes`, which is preserved by Home Assistant backups.
 - The image is large because it uses the official Hermes Agent image with browser automation and messaging dependencies included.

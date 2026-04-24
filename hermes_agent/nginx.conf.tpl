@@ -48,7 +48,7 @@ http {
     location ^~ /dashboard/ {
       __DASHBOARD_BLOCK__
       rewrite ^/dashboard/(.*)$ /$1 break;
-      proxy_pass http://127.0.0.1:__DASHBOARD_PORT__;
+      proxy_pass http://127.0.0.1:9119;
       proxy_http_version 1.1;
       proxy_set_header Upgrade $http_upgrade;
       proxy_set_header Connection "upgrade";
@@ -66,13 +66,13 @@ http {
     # the /dashboard/ ingress entry point.
     location ^~ /assets/ {
       __DASHBOARD_BLOCK__
-      proxy_pass http://127.0.0.1:__DASHBOARD_PORT__;
+      proxy_pass http://127.0.0.1:9119;
       proxy_set_header Host $host;
     }
 
     location ^~ /api/ {
       __DASHBOARD_BLOCK__
-      proxy_pass http://127.0.0.1:__DASHBOARD_PORT__;
+      proxy_pass http://127.0.0.1:9119;
       proxy_http_version 1.1;
       proxy_set_header Upgrade $http_upgrade;
       proxy_set_header Connection "upgrade";
@@ -84,7 +84,7 @@ http {
 
     location = /favicon.ico {
       __DASHBOARD_BLOCK__
-      proxy_pass http://127.0.0.1:__DASHBOARD_PORT__;
+      proxy_pass http://127.0.0.1:9119;
       proxy_set_header Host $host;
     }
 

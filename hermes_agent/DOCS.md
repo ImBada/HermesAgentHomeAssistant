@@ -6,15 +6,15 @@ The add-on follows the OpenClaw Home Assistant pattern: it keeps all user data i
 
 ## Required setup
 
-Configure at least one model provider key:
+Configure models and provider credentials inside Hermes, not in the Home Assistant add-on options. Open the add-on terminal or dashboard and run:
 
-- `openrouter_api_key` for OpenRouter
-- `nous_api_key` for Nous Portal API
-- `anthropic_api_key` for Anthropic
-- `openai_api_key` for OpenAI-compatible providers
-- `google_api_key` for Gemini
+```sh
+hermes setup
+hermes model
+hermes config edit
+```
 
-The default provider is `auto`, so Hermes will use the first usable credential it finds.
+The add-on only manages container, Ingress, terminal/dashboard, and Home Assistant connection settings. Existing Hermes `.env`, `config.yaml`, and `SOUL.md` settings under `/config/.hermes` are preserved across add-on restarts.
 
 ## Ingress UI
 

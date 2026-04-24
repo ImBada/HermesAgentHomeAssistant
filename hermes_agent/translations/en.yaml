@@ -11,24 +11,12 @@ configuration:
   enable_dashboard:
     name: Enable dashboard
     description: Start the Hermes dashboard and expose it through Ingress.
-  dashboard_port:
-    name: Dashboard port
-    description: Internal port for the Hermes dashboard.
   use_supervisor_api:
     name: Use Supervisor API
     description: Use Home Assistant's internal Supervisor token and URL instead of a Long-Lived Access Token.
   hass_url:
     name: Home Assistant URL
     description: Home Assistant base URL used when Supervisor API mode is disabled.
-  model:
-    name: Model
-    description: Default Hermes model identifier.
-  provider:
-    name: Provider
-    description: Hermes inference provider.
-  base_url:
-    name: Base URL
-    description: Optional OpenAI-compatible API base URL for custom providers.
   watch_domains:
     name: Watched domains
     description: Entity domains whose state changes should be forwarded to Hermes.
@@ -59,27 +47,6 @@ configuration:
   nginx_log_level:
     name: Nginx log level
     description: Ingress proxy access log verbosity.
-  personality:
-    name: Personality
-    description: Contents written to Hermes SOUL.md.
-  openrouter_api_key:
-    name: OpenRouter API key
-    description: Optional OpenRouter API key.
-  nous_api_key:
-    name: Nous API key
-    description: Optional Nous Portal API key.
-  anthropic_api_key:
-    name: Anthropic API key
-    description: Optional Anthropic API key.
-  openai_api_key:
-    name: OpenAI API key
-    description: Optional OpenAI or OpenAI-compatible API key.
-  google_api_key:
-    name: Google API key
-    description: Optional Google Gemini API key.
-  custom_api_key:
-    name: Custom API key
-    description: Optional API key for a custom OpenAI-compatible endpoint.
   hass_token:
     name: Home Assistant token
     description: Optional Long-Lived Access Token when not using the Supervisor API.
