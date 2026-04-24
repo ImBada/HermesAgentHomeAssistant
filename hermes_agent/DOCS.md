@@ -32,6 +32,8 @@ hermes tools
 hermes logs
 ```
 
+The terminal starts as the `hermes` user in `/config/.hermes/workspace` with the Hermes virtualenv on `PATH`, so the `hermes` command should be available immediately.
+
 ## Home Assistant access
 
 `use_supervisor_api` is enabled by default. In this mode the add-on uses Home Assistant's Supervisor-provided token. The add-on starts a tiny localhost compatibility proxy so Hermes can use its normal `/api/...` paths while Home Assistant receives requests through the Supervisor Core REST and WebSocket proxies.

@@ -314,6 +314,41 @@ DASHBOARD_PID=""
 TTYD_PID=""
 NGINX_PID=""
 SHUTTING_DOWN=false
+HERMES_TERMINAL_HOME="$HERMES_HOME/home"
+HERMES_TERMINAL_BASHRC="$HERMES_TERMINAL_HOME/.bashrc"
+
+mkdir -p "$HERMES_TERMINAL_HOME" "$HERMES_HOME/workspace"
+
+cat > "$HERMES_TERMINAL_BASHRC" <<EOF
+export HERMES_HOME="$HERMES_HOME"
+export HOME="$HERMES_TERMINAL_HOME"
+export PATH="/opt/hermes/.venv/bin:$HERMES_HOME/.local/bin:\$PATH"
+cd "$HERMES_HOME/workspace" 2>/dev/null || true
+EOF
+
+if id hermes >/dev/null 2>&1; then
+  chown -R hermes:hermes "$HERMES_HOME" 2>/dev/null || true
+fi
+
+start_terminal() {
+  echo "Starting web terminal on 127.0.0.1:${TERMINAL_PORT} ..."
+  if command -v gosu >/dev/null 2>&1 && id hermes >/dev/null 2>&1; then
+    env \
+      HERMES_HOME="$HERMES_HOME" \
+      HOME="$HERMES_TERMINAL_HOME" \
+      PATH="/opt/hermes/.venv/bin:$HERMES_HOME/.local/bin:$PATH" \
+      ttyd -W -i 127.0.0.1 -p "$TERMINAL_PORT" -b /terminal \
+      gosu hermes bash --rcfile "$HERMES_TERMINAL_BASHRC" -i &
+  else
+    env \
+      HERMES_HOME="$HERMES_HOME" \
+      HOME="$HERMES_TERMINAL_HOME" \
+      PATH="/opt/hermes/.venv/bin:$HERMES_HOME/.local/bin:$PATH" \
+      ttyd -W -i 127.0.0.1 -p "$TERMINAL_PORT" -b /terminal \
+      bash --rcfile "$HERMES_TERMINAL_BASHRC" -i &
+  fi
+  TTYD_PID=$!
+}
 
 shutdown() {
   SHUTTING_DOWN=true
@@ -337,9 +372,7 @@ else
 fi
 
 if [ "$ENABLE_TERMINAL" = "true" ]; then
-  echo "Starting web terminal on 127.0.0.1:${TERMINAL_PORT} ..."
-  ttyd -W -i 127.0.0.1 -p "$TERMINAL_PORT" -b /terminal bash &
-  TTYD_PID=$!
+  start_terminal
 else
   echo "Web terminal disabled."
 fi
@@ -384,8 +417,7 @@ while [ "$SHUTTING_DOWN" = "false" ]; do
   if [ -n "$TTYD_PID" ] && ! kill -0 "$TTYD_PID" >/dev/null 2>&1; then
     echo "WARN: web terminal exited. Restarting in 3s..."
     sleep 3
-    ttyd -W -i 127.0.0.1 -p "$TERMINAL_PORT" -b /terminal bash &
-    TTYD_PID=$!
+    start_terminal
   fi
   if ! kill -0 "$NGINX_PID" >/dev/null 2>&1; then
     echo "ERROR: nginx exited; stopping add-on."
