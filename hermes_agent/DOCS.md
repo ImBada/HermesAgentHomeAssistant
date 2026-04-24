@@ -2,7 +2,7 @@
 
 Hermes Agent runs as a Home Assistant app/add-on and connects to Home Assistant through Hermes' built-in Home Assistant gateway adapter.
 
-The add-on follows the OpenClaw Home Assistant pattern: it keeps all user data in `/config/.hermes`, exposes a Home Assistant Ingress landing page, starts an optional Hermes dashboard, and embeds an optional web terminal for setup and maintenance.
+The add-on keeps all user data in `/config/.hermes`, exposes a small Home Assistant Ingress page, starts an optional Hermes dashboard, and embeds an optional web terminal for setup and maintenance.
 
 ## Required setup
 
@@ -18,7 +18,7 @@ The add-on only manages container, Ingress, terminal/dashboard, and Home Assista
 
 ## Ingress UI
 
-Open the add-on from the Home Assistant sidebar or add-on page. The landing page provides:
+Open the add-on from the Home Assistant sidebar or add-on page. The page provides:
 
 - **Hermes Dashboard** at `/dashboard/`
 - **Terminal** at `/terminal/`
@@ -35,6 +35,8 @@ hermes logs
 ## Home Assistant access
 
 `use_supervisor_api` is enabled by default. In this mode the add-on uses Home Assistant's Supervisor-provided token. The add-on starts a tiny localhost compatibility proxy so Hermes can use its normal `/api/...` paths while Home Assistant receives requests through the Supervisor Core REST and WebSocket proxies.
+
+The add-on does not use host networking. Dashboard, terminal, and Ingress ports are private to the add-on container, which avoids conflicts with other HAOS services.
 
 If you turn `use_supervisor_api` off, set:
 

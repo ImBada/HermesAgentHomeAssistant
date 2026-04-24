@@ -12,7 +12,6 @@ stage: experimental
 init: false
 homeassistant_api: true
 hassio_api: false
-host_network: true
 
 ingress: true
 ingress_port: 48099

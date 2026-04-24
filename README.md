@@ -4,7 +4,7 @@ Home Assistant add-on repository for running [Hermes Agent](https://github.com/N
 
 The add-on wraps the official `nousresearch/hermes-agent` container and configures Hermes' built-in Home Assistant gateway. It can listen to selected Home Assistant state changes, let Hermes react to them, and send replies back as Home Assistant persistent notifications.
 
-The add-on layout and user experience are modeled after [OpenClawHomeAssistant](https://github.com/techartdev/OpenClawHomeAssistant): persistent `/config` storage, Home Assistant Ingress landing page, embedded terminal, and dashboard access from the add-on page.
+The add-on stores Hermes state in `/config/.hermes` and exposes a small Home Assistant Ingress page with dashboard and terminal access.
 
 ## Install
 
@@ -22,3 +22,7 @@ The add-on layout and user experience are modeled after [OpenClawHomeAssistant](
 - Model, provider, API key, and persona settings belong to Hermes itself under `/config/.hermes`; the add-on does not overwrite them on restart.
 - The add-on stores Hermes data under `/config/.hermes`, which is preserved by Home Assistant backups.
 - The image is large because it uses the official Hermes Agent image with browser automation and messaging dependencies included.
+
+## References
+
+- Home Assistant add-on structure and Ingress/terminal ideas were adapted from [techartdev/OpenClawHomeAssistant](https://github.com/techartdev/OpenClawHomeAssistant).

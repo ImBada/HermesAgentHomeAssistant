@@ -38,9 +38,13 @@ def main():
     nginx_out_path.write_text(conf, encoding="utf-8")
 
     landing = landing_tpl_path.read_text(encoding="utf-8")
+    terminal_status = "Enabled" if enable_terminal == "true" else "Disabled"
+    dashboard_status = "Enabled" if enable_dashboard == "true" else "Disabled"
     replacements = {
         "__ENABLE_TERMINAL__": enable_terminal,
         "__ENABLE_DASHBOARD__": enable_dashboard,
+        "__TERMINAL_STATUS__": terminal_status,
+        "__DASHBOARD_STATUS__": dashboard_status,
         "__DISK_TOTAL__": disk_total,
         "__DISK_USED__": disk_used,
         "__DISK_AVAIL__": disk_avail,
