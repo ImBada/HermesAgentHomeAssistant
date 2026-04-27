@@ -452,7 +452,7 @@ nginx -g 'daemon off;' &
 NGINX_PID=$!
 
 echo "Starting Hermes Home Assistant gateway..."
-/opt/hermes/docker/entrypoint.sh gateway &
+/opt/hermes/docker/entrypoint.sh gateway run --replace &
 GW_PID=$!
 
 while [ "$SHUTTING_DOWN" = "false" ]; do
